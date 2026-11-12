@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kelola Cemas</title>
+<style>
+:root{--teal:#5a43b5;--teal-d:#3f2f94;--mint:#f1edff;--sand:#fff3d6;--sand-b:#f0c76a;--ink:#2a2547;--line:#d9d2f5;--coral:#ff5a43;--bg:#fff}
+*{box-sizing:border-box}
+body{margin:0;padding:calc(14px + env(safe-area-inset-top,0px)) 12px calc(24px + env(safe-area-inset-bottom,0px));font-family:Verdana,Geneva,sans-serif;color:var(--ink);line-height:1.55;font-size:16px;
+ background:radial-gradient(circle at 12% 8%,#ece6ff 0,transparent 40%),radial-gradient(circle at 90% 90%,#e4ddff 0,transparent 45%),#f6f3ff}
+header{max-width:760px;margin:0 auto;background:linear-gradient(90deg,#5a43b5,#6c55cc);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-radius:18px 18px 0 0;position:relative;z-index:5}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:bold;font-size:1.1rem}
+.logo{width:30px;height:30px;border-radius:50%;background:#fff;color:var(--teal);display:grid;place-items:center;font-size:1rem}
+#mbtn{background:#ffa53b;color:#fff;border:0;border-radius:999px;padding:7px 16px;font:inherit;font-weight:bold;font-size:.85rem;cursor:pointer}
+nav{display:none;position:absolute;right:14px;top:56px;background:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(63,47,148,.25);padding:8px;min-width:200px;flex-direction:column;gap:2px}
+nav.open{display:flex}
+nav button{background:transparent;border:0;color:var(--ink);padding:10px 12px;border-radius:10px;font:inherit;font-size:.9rem;text-align:left;cursor:pointer}
+nav button:hover,nav button.on{background:var(--mint);color:var(--teal-d)}
+main{max-width:760px;margin:0 auto;background:#fff;border-radius:0 0 18px 18px;box-shadow:0 8px 28px rgba(90,67,181,.15);padding:22px 20px 34px}
+h1{font-size:1.4rem;margin:.2em 0 .3em;color:var(--teal-d)}h2{font-size:1.2rem;margin:.2em 0 .5em;color:var(--teal-d)}
+h3{color:var(--teal-d)}
+.sub{margin:0 0 16px}
+.hero{position:relative;height:96px;margin:4px 0 8px;display:flex;justify-content:center;align-items:center}
+.hero .main-ic{width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,#e9e2ff,#ffe3dc);display:grid;place-items:center;font-size:2.6rem}
+.hero i{position:absolute;font-style:normal;font-size:1.6rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.menu{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 12px;display:flex;align-items:center;gap:12px;font:inherit;font-weight:bold;color:var(--teal-d);cursor:pointer;box-shadow:0 4px 14px rgba(90,67,181,.12);text-align:left}
+.menu:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(90,67,181,.2)}
+.menu .ic{font-size:1.5rem}
+.help{display:flex;gap:12px;align-items:flex-start;background:var(--sand);border:1.5px solid var(--sand-b);border-radius:14px;padding:14px 16px;margin:22px auto 0;max-width:760px;font-size:.92rem}
+.help .ic2{font-size:1.6rem}
+.note{font-size:.88rem;color:#5b5680;margin-top:10px}
+.q{padding:12px 0;border-bottom:1px solid var(--line)}
+.q p{margin:0 0 8px}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opts label{flex:1 1 90px;border:1.5px solid var(--line);border-radius:999px;padding:8px 6px;text-align:center;font-size:.82rem;cursor:pointer;background:#fff}
+.opts input{position:absolute;opacity:0}
+.opts label:has(input:checked){background:var(--teal);color:#fff;border-color:var(--teal)}
+.opts label:has(input:focus-visible){outline:3px solid var(--sand-b)}
+.btn{background:var(--coral);color:#fff;border:0;border-radius:10px;padding:11px 20px;font:inherit;font-weight:bold;font-size:.92rem;cursor:pointer;margin:14px 8px 0 0;box-shadow:0 4px 10px rgba(255,90,67,.3)}
+.btn:hover{background:#e84a33}
+.btn.alt{background:#fff;color:var(--teal-d);border:1.5px solid var(--teal);box-shadow:none}
+.btn.alt:hover{background:var(--mint)}
+.result{background:var(--mint);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:16px}
+label.f{display:block;font-weight:bold;font-size:.92rem;margin:14px 0 4px}
+textarea,input[type=text],input[type=email],input[type=password]{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:.95rem;background:#fcfbff}
+textarea:focus,input:focus{border-color:var(--teal);outline:none}
+textarea{min-height:76px;resize:vertical}
+.ex{background:var(--mint);border-radius:12px;padding:12px 14px;font-size:.88rem;margin:6px 0 4px}
+.card{border-left:5px solid var(--coral);background:var(--mint);padding:12px 14px;border-radius:0 12px 12px 0;margin:10px 0}
+.card small{color:#5b5680}
+.stage{display:flex;flex-direction:column;align-items:center;margin:18px 0}
+#orb{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#9b88f0,#5a43b5);opacity:.9;transition:transform 4s ease-in-out}
+#cue{font-weight:bold;margin-top:14px;min-height:1.6em}
+details{border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;margin:10px 0}
+summary{font-weight:bold;cursor:pointer;color:var(--teal-d)}
+.fb{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:.9rem}
+.fb.ok{background:var(--mint);border-left:5px solid var(--teal)}
+.fb.no{background:var(--sand);border-left:5px solid var(--sand-b)}
+.screen{position:relative;background:linear-gradient(180deg,#eef0ff,#e4e0fb);border:3px solid #3f4d7a;border-radius:16px;padding:14px;margin:4px 0 18px}
+.scr-title{background:#3f5fa8;color:#fff;text-align:center;font-weight:bold;border-radius:8px;padding:8px;margin-bottom:12px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tile{border:0;border-radius:14px;padding:14px 4px;font:inherit;font-size:.78rem;font-weight:bold;color:var(--ink);cursor:pointer;box-shadow:0 4px 10px rgba(63,47,148,.15)}
+.tile span{display:block;font-size:1.8rem;margin-bottom:4px}
+.tile:hover{transform:translateY(-2px)}
+.plant{position:absolute;right:-6px;bottom:-14px;font-size:2.2rem}
+.t1{background:#dbeafe}.t2{background:#e9e2ff}.t3{background:#fff1d0}.t4{background:#d5f5ea}
+.alur{display:flex;align-items:stretch;gap:4px;margin:0 0 18px;overflow-x:auto}
+.al{flex:1 1 0;min-width:74px;border:2px solid transparent;border-radius:14px;padding:8px 4px;text-align:center;font:inherit;font-size:.72rem;font-weight:bold;color:var(--ink);cursor:pointer}
+.al span{display:block;font-size:1.3rem}
+.al.on{border-color:var(--teal-d);box-shadow:0 4px 12px rgba(63,47,148,.25)}
+.ar{align-self:center;color:var(--teal-d);font-weight:bold;font-size:.8rem}
+#cek,#info{padding-bottom:20px;margin-bottom:22px;border-bottom:2px dashed var(--line)}
+.gate{max-width:400px;margin:6vh auto 0;padding:26px 20px;text-align:center;background:#fff;border-radius:18px;box-shadow:0 8px 28px rgba(90,67,181,.18)}
+.gate label.f{text-align:left}.gate .opts input{width:auto}
+.err{color:#c0392b;min-height:1.4em;font-size:.9rem;margin-top:8px}
+body.locked header,body.locked main,body.locked .help{display:none}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}.tbl th,.tbl td{padding:8px;border-bottom:1px solid var(--line);text-align:left}.tbl th{background:var(--mint);color:var(--teal-d)}
+.hide{display:none}
+:focus-visible{outline:3px solid var(--sand-b);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){#orb,.menu{transition:none}}
+@media print{header,.help,.btn,nav{display:none}body{background:#fff}}
+@media(max-width:480px){.grid{grid-template-columns:1fr}.tiles{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body class="locked">
+<div id="gate" class="gate">
+  <h1>Kelola Cemas</h1>
+  <p class="note">Masuk sebagai siswa atau guru BK.</p>
+  <div class="opts" style="margin-top:10px"><label><input type="radio" name="peran" value="siswa" checked>Siswa</label><label><input type="radio" name="peran" value="guru">Guru BK</label></div>
+  <label class="f" for="ln">Nama</label>
+  <input type="text" id="ln" autocomplete="name" maxlength="40">
+  <label class="f" for="le">Email</label>
+  <input type="email" id="le" autocomplete="email" placeholder="nama@email.com">
+  <div class="err" id="err" aria-live="polite"></div>
+  <button class="btn" onclick="masukLogin()">Masuk</button>
+  <p class="note">Catatan untuk siswa: nama, email, dan waktu loginmu tercatat dan dapat dilihat guru BK.</p>
+</div>
+<header>
+  <div class="brand" onclick="go('beranda')"><span class="logo">🧠</span>Kelola Cemas</div>
+  <button id="mbtn" onclick="document.getElementById('nav').classList.toggle('open')" aria-label="Buka menu">☰ Menu</button>
+  <nav id="nav" aria-label="Menu utama">
+    <button data-p="beranda">Beranda &amp; Tujuan</button>
+    <button data-p="materi">Materi Belajar</button>
+    <button data-p="refleksi">Latihan Refleksi</button>
+    <button data-p="umpan">Umpan Balik</button>
+    <button data-p="konsul">Minta Konsultasi</button>
+    <button data-p="riwayat" id="nRiwayat" class="hide">Riwayat Siswa</button>
+    <button id="bKeluar" onclick="keluar()">Keluar</button>
+  </nav>
+</header>
+<main>
+<div id="alur" class="alur"></div>
+
+<section id="beranda">
+  <div class="screen"><div class="scr-title">Media BK Digital</div>
+    <div class="tiles">
+      <button class="tile t1" onclick="go('beranda')"><span>🏠</span>Beranda</button>
+      <button class="tile t2" onclick="go('materi')"><span>📖</span>Materi</button>
+      <button class="tile t3" onclick="go('refleksi')"><span>📋</span>Refleksi</button>
+      <button class="tile t4" onclick="go('umpan')"><span>📊</span>Umpan Balik</button>
+    </div><span class="plant" aria-hidden="true">🪴</span></div>
+  <h1>Kelola Cemas: tenang menghadapi tugas &amp; ujian</h1>
+  <h3 style="margin:.6em 0 .2em">Tujuan</h3>
+  <ol style="margin:.2em 0 0;padding-left:1.2em">
+    <li>Mengenali tanda kecemasan akademik.</li>
+    <li>Mencoba latihan sederhana untuk menenangkan diri.</li>
+    <li>Meninjau ulang pikiran yang membebani.</li>
+    <li>Tahu kapan dan bagaimana menghubungi guru BK.</li>
+  </ol>
+  <p class="note"><b>Soal privasi:</b> kamu masuk dengan nama dan email; guru BK dapat melihat riwayat login (nama, email, waktu). Jawaban Cek Perasaan tidak disimpan. Catatan Kartu Pikiran bersifat opsional, hanya tersimpan di perangkat ini, dan bisa kamu hapus kapan saja. Website ini bukan diagnosis dan tidak menggantikan guru BK.</p>
+</section>
+
+<section id="info" class="hide">
+  <h2>Materi Belajar</h2>
+  <p class="sub">Kenali dulu kecemasan akademik, lalu coba latihannya.</p>
+  <div class="card"><b>Apa itu kecemasan akademik?</b><br>Rasa cemas yang muncul saat menghadapi tugas, ulangan, atau ujian. Ini wajar, terutama di tahun pertama SMA, dan bisa dikelola.</div>
+  <details><summary>1. Pikiran yang penuh kekhawatiran</summary>Misalnya “Aku pasti gagal”. Kamu bisa meninjau pikiran ini di Kartu Pikiran.</details>
+  <details><summary>2. Tubuh yang tegang</summary>Misalnya jantung berdebar atau bahu kaku. Latihan Tenang di bawah membantu tubuh lebih rileks.</details>
+  <details><summary>3. Ingin menghindar atau menunda</summary>Biasanya mereda ketika pikiran dan tubuh lebih tenang. Jika belum, bicarakan dengan guru BK.</details>
+</section>
+
+<section id="cek" class="hide">
+  <h2>Cek Perasaan</h2>
+  <p class="sub">Pilih jawaban yang paling sesuai dengan perasaanmu selama seminggu terakhir. Tidak ada jawaban benar atau salah.</p>
+  <div id="qs"></div>
+  <button class="btn" onclick="hitung()">Lihat gambaran</button>
+  <button class="btn alt" onclick="resetCek()">Ulangi</button>
+  <div id="hasil" class="result hide" aria-live="polite"></div>
+</section>
+
+<section id="tenang" class="hide">
+  <h2>Latihan Tenang</h2>
+  <p class="sub">Ikuti lingkaran: membesar saat menarik napas, mengecil saat menghembuskan.</p>
+  <div class="stage">
+    <div id="orb" aria-hidden="true"></div>
+    <div id="cue" aria-live="polite">Siap? Tekan Mulai.</div>
+    <div class="note" id="cnt"></div>
+  </div>
+  <div style="text-align:center">
+    <button class="btn" id="bMulai" onclick="mulaiNapas()">Mulai</button>
+    <button class="btn alt" onclick="stopNapas()">Berhenti</button>
+  </div>
+  <h2 style="margin-top:26px">Napas pelan</h2>
+  <p>Duduklah dengan nyaman. Tarik napas lewat hidung sambil menghitung sampai empat. Tahan sebentar. Hembuskan pelan lewat mulut sambil menghitung sampai enam. Ulangi lima kali.</p>
+  <h2>Relaksasi otot tiga langkah</h2>
+  <details><summary>1. Bahu</summary>Angkat kedua bahu ke arah telinga, tahan lima detik, lalu lepaskan.</details>
+  <details><summary>2. Tangan</summary>Kepalkan kedua tangan, tahan lima detik, lalu lepaskan.</details>
+  <details><summary>3. Wajah</summary>Kerutkan dahi dan pejamkan mata dengan kuat, tahan lima detik, lalu lepaskan.</details>
+  <p class="note">Hentikan latihan jika terasa nyeri atau pusing.</p>
+</section>
+
+<section id="kartu" class="hide">
+  <h2>Kartu Pikiran</h2>
+  <p class="sub">Tuliskan pikiran yang mengganggu, lalu cari pikiran yang lebih tepat.</p>
+  <div class="ex"><b>Contoh.</b> Situasi: nilai ulangan matematikaku rendah. Pikiranku saat itu: “Aku pasti gagal di semester ini.” Pikiran yang lebih tepat: “Satu nilai belum menentukan seluruh semester. Aku bisa mempelajari lagi bagian yang belum paham dan bertanya kepada guru.”</div>
+  <label class="f" for="k1">Situasi (apa yang terjadi?)</label>
+  <textarea id="k1"></textarea>
+  <label class="f" for="k2">Pikiranku saat itu</label>
+  <textarea id="k2"></textarea>
+  <label class="f" for="k3">Pikiran yang lebih tepat</label>
+  <textarea id="k3"></textarea>
+  <button class="btn" onclick="simpanKartu()">Tampilkan &amp; simpan kartu</button>
+  <button class="btn alt" onclick="window.print()">Cetak</button>
+  <div id="daftar" aria-live="polite"></div>
+  <button class="btn alt hide" id="bHapus" onclick="hapusSemua()">Hapus catatan saya</button>
+  <p class="note" id="stNote"></p>
+</section>
+
+<section id="konsul" class="hide">
+  <h2>Minta Konsultasi</h2>
+  <p class="sub">Susun pesan singkat untuk guru BK. Tidak ada data yang dikirim otomatis dari halaman ini: kamu yang memutuskan kapan dan lewat mana pesan dikirim.</p>
+  <label class="f" for="n1">Nama panggilan &amp; kelas</label>
+  <input type="text" id="n1" placeholder="mis. Dimas, X-3">
+  <label class="f" for="n2">Topik yang ingin dibicarakan</label>
+  <input type="text" id="n2" placeholder="mis. cemas menjelang ulangan">
+  <label class="f" for="n3">Waktu yang cocok</label>
+  <input type="text" id="n3" placeholder="mis. istirahat kedua">
+  <button class="btn" onclick="susunPesan()">Susun pesan</button>
+  <div id="pesan" class="result hide">
+    <p id="pesanTeks" style="white-space:pre-wrap;margin-top:0"></p>
+    <button class="btn" onclick="salin()">Salin pesan</button>
+    <a class="btn alt" id="kontak" style="display:inline-block;text-decoration:none" target="_blank" rel="noopener">Hubungi lewat WhatsApp</a>
+    <p class="note" id="salinNote"></p>
+  </div>
+</section>
+
+<section id="umpan" class="hide">
+  <h2>Umpan Balik</h2>
+  <h3 style="margin:.4em 0 .2em">Bagian 1: Uji Pemahaman</h3>
+  <p class="sub">Lima pernyataan tentang isi website ini. Pilih “Tepat” atau “Kurang tepat”, lalu baca penjelasannya. Ini bukan penilaian, hanya untuk belajar.</p>
+  <div id="ujiQs"></div>
+  <div id="ujiRes" class="result hide" aria-live="polite"></div>
+  <button class="btn alt" onclick="buatUji()">Ulangi Uji Pemahaman</button>
+  <h3 style="margin:1.6em 0 .2em">Bagian 2: Pendapatmu tentang Website</h3>
+  <p class="sub">Dua pertanyaan singkat tentang website ini. Tanpa nama.</p>
+  <div class="q"><p>1. Petunjuk pada setiap menu mudah saya pahami.</p>
+    <div class="opts"><label><input type="radio" name="u1" value="Ya">Ya</label><label><input type="radio" name="u1" value="Tidak">Tidak</label></div></div>
+  <label class="f" for="u2">2. Apa yang menurutmu perlu diperbaiki atau ditambah?</label>
+  <textarea id="u2"></textarea>
+  <button class="btn" onclick="kirimUmpan()">Kirim umpan balik</button>
+  <p class="note" id="ufOk" aria-live="polite"></p>
+  <div id="ufHasil" class="result hide">
+    <p id="ufTeks" style="white-space:pre-wrap;margin-top:0"></p>
+    <button class="btn" onclick="salinUmpan()">Salin</button>
+    <a class="btn alt" id="ufWa" style="display:inline-block;text-decoration:none" target="_blank" rel="noopener">Kirim lewat WhatsApp</a>
+    <p class="note" id="ufNote">Tidak ada yang terkirim otomatis. Kamu yang memutuskan mengirimnya.</p>
+  </div>
+</section>
+
+<section id="riwayat" class="hide">
+  <h2>Riwayat Login Siswa</h2>
+  <p class="sub" id="rsrc"></p>
+  <div id="rtab" style="overflow-x:auto"></div>
+  <button class="btn" onclick="tampilRiwayat()">Muat ulang</button>
+  <a class="btn hide" id="rlink" style="display:inline-block;text-decoration:none" target="_blank" rel="noopener">Buka rekap di Google Sheet/Form</a>
+  <button class="btn alt hide" id="rhapus" onclick="hapusRiwayat()">Hapus riwayat (demo)</button>
+</section>
+
+<div id="lanjut"></div>
+
+<div class="help"><span class="ic2">💡</span><div><b>Kotak bantuan:</b> jika kamu merasa sangat tertekan, hubungi guru BK atau orang dewasa yang kamu percaya.
+  <a href="#" id="bantu" onclick="go('konsul');return false" style="color:var(--teal-d)">Susun pesan untuk guru BK</a></div></div>
+
+</main>
+<script>
+/* ===== PENGATURAN: ganti sesuai guru BK sekolah ===== */
+var KONTAK_BK = "https://wa.me/6285892676745"; // nomor WA guru BK (format 62...)
+var FORM_LOGIN = {url:"https://docs.google.com/forms/d/e/1FAIpQLSeJmEbIa6_4N7Q3Y0lqdcl1ot5NGqdwKMCzHUnf0RIC20S2Yw/formResponse", nama:"entry.1849362925", email:"entry.1409639469", waktu:"entry.1154149196"}; // Google Form riwayat login. url = alamat berakhiran /formResponse; nama/email/waktu = kode entry.xxxxxxxxx tiap kolom
+var LINK_REKAP = "https://docs.google.com/spreadsheets/d/1uNb0OSdeo5mqPwaWm8zu3adkTUF6OSd4XnnoZB7B4cM/edit?resourcekey=&gid=343922072#gid=343922072"; // link Google Sheet atau Form (tab Respons) yang dibuka guru BK untuk melihat rekap
+var ENDPOINT = ""; // tempel URL Web App Google Apps Script di sini agar umpan balik terkirim otomatis ke email
+/* ===================================================== */
+
+var GROUP={beranda:["beranda"],materi:["info","tenang"],refleksi:["cek","kartu"],umpan:["umpan"],konsul:["konsul"],riwayat:["riwayat"]};
+var ALIAS={cek:"refleksi",kartu:"refleksi",tenang:"materi"};
+var ALL=["beranda","info","tenang","cek","kartu","konsul","umpan","riwayat"];
+var ALUR=[["beranda","Beranda & Tujuan","🏠","t1"],["materi","Materi Belajar","📖","t2"],["refleksi","Latihan Refleksi","📋","t3"],["umpan","Umpan Balik","📊","t4"]];
+function go(p){
+  p=ALIAS[p]||p;if(!GROUP[p])p="beranda";
+  ALL.forEach(function(x){document.getElementById(x).classList.toggle("hide",GROUP[p].indexOf(x)<0)});
+  document.querySelectorAll("nav button").forEach(function(b){b.classList.toggle("on",b.dataset.p===p)});
+  if(p!=="materi")stopNapas();
+  if(p==="refleksi")tampilKartu();
+  if(p==="riwayat")tampilRiwayat();
+  var h="",ix=-1;
+  ALUR.forEach(function(a,i){if(a[0]===p)ix=i;h+=(i?'<span class="ar">➜</span>':'')+'<button class="al '+a[3]+(a[0]===p?' on':'')+'" onclick="go(\''+a[0]+'\')"><span>'+a[2]+'</span>'+a[1]+'</button>'});
+  document.getElementById("alur").innerHTML=h;
+  document.getElementById("lanjut").innerHTML=(ix>-1&&ix<3)?'<button class="btn" onclick="go(\''+ALUR[ix+1][0]+'\')">Lanjut: '+ALUR[ix+1][1]+' →</button>':'<button class="btn alt" onclick="go(\'beranda\')">Kembali ke Beranda</button>';
+  document.getElementById("nav").classList.remove("open");
+  window.scrollTo(0,0);
+}
+document.querySelectorAll("nav button[data-p]").forEach(function(b){b.onclick=function(){go(b.dataset.p)}});
+document.getElementById("kontak").href=KONTAK_BK;
+
+/* Cek Perasaan */
+var BUTIR=["Aku merasa terlalu khawatir ketika memikirkan ujian atau tugas.",
+"Aku sulit berkonsentrasi belajar karena pikiranku penuh kekhawatiran.",
+"Badanku terasa tegang atau jantungku berdebar saat harus menghadapi tugas atau ujian.",
+"Aku takut hasil belajarku mengecewakan orang lain.",
+"Aku menunda belajar karena takut gagal."];
+var PIL=["Tidak pernah","Kadang-kadang","Sering","Hampir selalu"];
+function buatButir(){
+  var h="";
+  BUTIR.forEach(function(t,i){
+    h+='<div class="q"><p>'+(i+1)+'. '+t+'</p><div class="opts">';
+    PIL.forEach(function(p,j){h+='<label><input type="radio" name="q'+i+'" value="'+(j+1)+'">'+p+'</label>'});
+    h+='</div></div>';
+  });
+  document.getElementById("qs").innerHTML=h;
+}
+buatButir();
+function hitung(){
+  var tot=0,h=document.getElementById("hasil");
+  for(var i=0;i<BUTIR.length;i++){
+    var c=document.querySelector('input[name="q'+i+'"]:checked');
+    if(!c){h.className="result";h.innerHTML="Masih ada butir yang belum kamu jawab. Lengkapi dulu ya.";return}
+    tot+=parseInt(c.value,10);
+  }
+  var judul,saran;
+  if(tot<=9){judul="Terasa ringan";saran="Sepertinya kamu cukup terkendali. Kamu tetap bisa mencoba Latihan Tenang sebelum belajar atau ujian."}
+  else if(tot<=14){judul="Cukup terasa";saran="Ada rasa cemas yang cukup terasa. Coba Latihan Tenang, lalu tulis pikiran yang mengganggu di Kartu Pikiran."}
+  else{judul="Terasa berat";saran="Rasa cemasmu terasa berat akhir-akhir ini. Coba Latihan Tenang, dan sebaiknya ceritakan kepada guru BK atau orang dewasa yang kamu percaya."}
+  h.className="result";
+  h.innerHTML="<b>Gambaran: "+judul+"</b><p>"+saran+"</p><p class='note'>Ini hanya gambaran sesaat, bukan diagnosis. Kamu boleh menghubungi guru BK kapan saja.</p>"+
+   "<button class='btn' onclick=\"go('tenang')\">Ke Latihan Tenang</button><button class='btn alt' onclick=\"go('konsul')\">Minta Konsultasi</button>";
+}
+function resetCek(){buatButir();document.getElementById("hasil").className="result hide"}
+
+/* Latihan Tenang */
+var tm=null,sisa=0;
+function mulaiNapas(){
+  stopNapas();sisa=5;
+  var orb=document.getElementById("orb"),cue=document.getElementById("cue"),cnt=document.getElementById("cnt"),reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function tarik(){
+    if(sisa<=0){selesai();return}
+    cue.textContent="Tarik napas… (4)";cnt.textContent="Putaran "+(6-sisa)+" dari 5";
+    orb.style.transitionDuration="4s";orb.style.transform=reduce?"none":"scale(2)";
+    tm=setTimeout(function(){cue.textContent="Tahan sebentar";tm=setTimeout(hembus,1000)},4000);
+  }
+  function hembus(){
+    cue.textContent="Hembuskan pelan… (6)";
+    orb.style.transitionDuration="6s";orb.style.transform="scale(1)";
+    tm=setTimeout(function(){sisa--;tarik()},6000);
+  }
+  function selesai(){cue.textContent="Selesai. Bagaimana rasanya sekarang?";cnt.textContent="";tm=null}
+  document.getElementById("bMulai").textContent="Ulangi";
+  tarik();
+}
+function stopNapas(){
+  if(tm){clearTimeout(tm);tm=null}
+  var o=document.getElementById("orb");o.style.transitionDuration=".5s";o.style.transform="scale(1)";
+  document.getElementById("cue").textContent="Siap? Tekan Mulai.";document.getElementById("cnt").textContent="";
+}
+
+/* Kartu Pikiran (opsional, hanya di peramban) */
+var KEY="kelolacemas_kartu",mem=[],okStore=true;
+function muat(){try{mem=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){okStore=false;mem=[]}}
+function tulis(){try{localStorage.setItem(KEY,JSON.stringify(mem))}catch(e){okStore=false}}
+function esc(s){return s.replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function simpanKartu(){
+  var a=document.getElementById("k1").value.trim(),b=document.getElementById("k2").value.trim(),c=document.getElementById("k3").value.trim();
+  if(!a||!b||!c){document.getElementById("stNote").textContent="Isi ketiga kolom dulu ya.";return}
+  mem.unshift({s:a,p:b,t:c,w:new Date().toLocaleDateString("id-ID")});
+  tulis();["k1","k2","k3"].forEach(function(i){document.getElementById(i).value=""});tampilKartu();
+}
+function tampilKartu(){
+  var h="";
+  mem.forEach(function(k,i){
+    h+='<div class="card"><small>'+k.w+'</small><br><b>Situasi:</b> '+esc(k.s)+'<br><b>Pikiranku:</b> '+esc(k.p)+'<br><b>Lebih tepat:</b> '+esc(k.t)+
+    '<br><button class="btn alt" style="padding:4px 10px;font-size:.8rem" onclick="hapusSatu('+i+')">Hapus kartu ini</button></div>';
+  });
+  document.getElementById("daftar").innerHTML=h;
+  document.getElementById("bHapus").classList.toggle("hide",!mem.length);
+  document.getElementById("stNote").textContent=okStore?"Kartu hanya tersimpan di perangkat ini. Tidak dikirim ke mana pun.":"Penyimpanan tidak tersedia di peramban ini. Gunakan tombol Cetak atau tangkapan layar untuk menyimpan kartu.";
+}
+function hapusSatu(i){mem.splice(i,1);tulis();tampilKartu()}
+var konfHapus=null;
+function hapusSemua(){
+  var b=document.getElementById("bHapus");
+  if(!konfHapus){b.textContent="Klik lagi untuk menghapus semua";konfHapus=setTimeout(function(){konfHapus=null;b.textContent="Hapus catatan saya"},4000);return}
+  clearTimeout(konfHapus);konfHapus=null;b.textContent="Hapus catatan saya";
+  mem=[];try{localStorage.removeItem(KEY)}catch(e){}tampilKartu();
+}
+muat();
+
+/* Minta Konsultasi: hanya menyusun teks, tidak mengirim data */
+function susunPesan(){
+  var n=document.getElementById("n1").value.trim()||"(nama panggilan & kelas)",
+      t=document.getElementById("n2").value.trim()||"(topik yang ingin dibicarakan)",
+      w=document.getElementById("n3").value.trim()||"(waktu yang cocok)";
+  var s="Selamat siang Bapak/Ibu guru BK. Saya "+n+". Saya ingin berkonsultasi tentang "+t+". Waktu yang cocok untuk saya: "+w+". Terima kasih.";
+  document.getElementById("pesanTeks").textContent=s;
+  document.getElementById("pesan").className="result";
+  var k=document.getElementById("kontak");
+  k.href=KONTAK_BK+"?text="+encodeURIComponent(s);
+}
+function salin(){
+  var s=document.getElementById("pesanTeks").textContent,note=document.getElementById("salinNote");
+  if(navigator.clipboard){navigator.clipboard.writeText(s).then(function(){note.textContent="Pesan disalin."},function(){note.textContent="Salin manual dengan menyorot teks."})}
+  else note.textContent="Salin manual dengan menyorot teks.";
+}
+
+/* Uji Pemahaman */
+var UJI=[
+{t:"Saat cemas menjelang ujian, napas pelan dan relaksasi otot bisa membantu tubuh menjadi lebih tenang.",a:"Tepat",e:"Napas pelan dan melepaskan ketegangan otot membantu tubuh keluar dari rasa tegang. Itulah fungsi Latihan Tenang."},
+{t:"Hasil Cek Perasaan adalah diagnosis bahwa aku mengalami gangguan kecemasan.",a:"Kurang tepat",e:"Cek Perasaan hanya memberi gambaran sesaat tentang perasaanmu selama seminggu terakhir. Ini bukan diagnosis dan tidak memberi label."},
+{t:"Setelah satu nilai ulangan rendah, pikiran “Aku pasti gagal di semester ini” sudah merupakan pikiran yang tepat.",a:"Kurang tepat",e:"Satu nilai belum menentukan seluruh semester. Kartu Pikiran membantumu mengganti pikiran itu dengan yang lebih tepat, misalnya mempelajari lagi bagian yang belum paham."},
+{t:"Jika rasa cemasku terasa sangat berat, sebaiknya aku menceritakannya kepada guru BK atau orang dewasa yang kupercaya.",a:"Tepat",e:"Website ini hanya membantu secara mandiri dan tidak menggantikan guru BK. Bercerita kepada orang yang tepat adalah langkah yang baik."},
+{t:"Catatan Kartu Pikiran yang kutulis otomatis dikirim ke guru BK.",a:"Kurang tepat",e:"Catatan hanya tersimpan di perangkatmu, tidak dikirim ke mana pun, dan bisa kamu hapus kapan saja."}
+];
+var ujiJawab=[];
+function buatUji(){
+  ujiJawab=[];var h="";
+  UJI.forEach(function(u,i){
+    h+='<div class="q"><p>'+(i+1)+'. '+u.t+'</p><div class="opts" id="uo'+i+'">'+
+    '<button class="btn alt" style="margin:0;flex:1" onclick="jawabUji('+i+',\'Tepat\')">Tepat</button>'+
+    '<button class="btn alt" style="margin:0;flex:1" onclick="jawabUji('+i+',\'Kurang tepat\')">Kurang tepat</button>'+
+    '</div><div id="uf'+i+'" aria-live="polite"></div></div>';
+  });
+  document.getElementById("ujiQs").innerHTML=h;
+  document.getElementById("ujiRes").className="result hide";
+}
+function jawabUji(i,v){
+  if(ujiJawab[i])return;
+  ujiJawab[i]=v;var u=UJI[i],ok=(v===u.a);
+  document.querySelectorAll("#uo"+i+" button").forEach(function(b){b.disabled=true});
+  document.getElementById("uf"+i).innerHTML='<div class="fb '+(ok?"ok":"no")+'"><b>Jawabanmu '+(ok?"tepat":"kurang tepat")+'.</b> '+
+    (ok?"":"Yang lebih tepat: <b>"+u.a+"</b>. ")+u.e+'</div>';
+  var n=0,tepat=0;
+  UJI.forEach(function(x,j){if(ujiJawab[j]){n++;if(ujiJawab[j]===x.a)tepat++}});
+  if(n===UJI.length){
+    var r=document.getElementById("ujiRes");r.className="result";
+    r.innerHTML="<b>"+tepat+" dari "+UJI.length+" jawabanmu tepat.</b><p>Tidak apa-apa jika ada yang masih kurang tepat. Baca lagi penjelasannya, atau coba lagi fitur yang terkait.</p>";
+  }
+}
+buatUji();
+
+/* Umpan balik: terkirim otomatis jika ENDPOINT diisi, jika tidak dibuat pesan untuk dikirim manual */
+function kirimUmpan(){
+  var c=document.querySelector('input[name="u1"]:checked');
+  if(!c){document.getElementById("ufOk").textContent="Jawab soal 1 dulu ya.";return}
+  if(!ENDPOINT){susunUmpan();return}
+  var d={jenis:"umpan",u1:c.value,u2:document.getElementById("u2").value.trim()||"-",waktu:new Date().toLocaleString("id-ID")};
+  var ok=document.getElementById("ufOk");ok.textContent="Mengirim…";
+  fetch(ENDPOINT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(d)})
+  .then(function(){ok.textContent="Terima kasih! Umpan balikmu sudah dikirim ke konselor (tanpa nama).";document.getElementById("u2").value=""})
+  .catch(function(){ok.textContent="Gagal mengirim otomatis. Kamu bisa mengirimnya manual di bawah.";susunUmpan()});
+}
+function susunUmpan(){
+  var c=document.querySelector('input[name="u1"]:checked'),t=document.getElementById("ufTeks");
+  if(!c){document.getElementById("ufOk").textContent="Jawab soal 1 dulu ya.";return}
+  var saran=document.getElementById("u2").value.trim()||"-";
+  var s="Umpan balik Kelola Cemas (tanpa nama).\n1) Petunjuk mudah dipahami: "+c.value+"\n2) Yang perlu diperbaiki/ditambah: "+saran;
+  t.textContent=s;document.getElementById("ufHasil").className="result";
+  document.getElementById("ufWa").href=KONTAK_BK+"?text="+encodeURIComponent(s);
+}
+function salinUmpan(){
+  var s=document.getElementById("ufTeks").textContent,n=document.getElementById("ufNote");
+  if(navigator.clipboard){navigator.clipboard.writeText(s).then(function(){n.textContent="Disalin."},function(){n.textContent="Salin manual dengan menyorot teks."})}
+  else n.textContent="Salin manual dengan menyorot teks.";
+}
+
+/* Login siswa dan guru BK */
+var KODE_GURU="0509",KODE_SISWA="0926",ROLE=null,NAMA="",EMAIL="";
+function lokal(){try{return JSON.parse(localStorage.getItem("kc_login")||"[]")}catch(e){return[]}}
+function simpanLokal(a){try{localStorage.setItem("kc_login",JSON.stringify(a))}catch(e){}}
+function catatLogin(){
+  var w=new Date().toLocaleString("id-ID"),a=lokal();a.push({nama:NAMA,email:EMAIL,waktu:w});simpanLokal(a);
+  if(FORM_LOGIN.url){
+    try{
+      var fr=document.createElement("iframe");fr.name="kcfr"+Date.now();fr.style.display="none";document.body.appendChild(fr);
+      var f=document.createElement("form");f.method="POST";f.action=FORM_LOGIN.url;f.target=fr.name;f.style.display="none";
+      var kv={};kv[FORM_LOGIN.nama]=NAMA;kv[FORM_LOGIN.email]=EMAIL;kv[FORM_LOGIN.waktu]=w;kv["fvv"]="1";kv["pageHistory"]="0";
+      Object.keys(kv).forEach(function(k){var i=document.createElement("input");i.type="hidden";i.name=k;i.value=kv[k];f.appendChild(i)});
+      document.body.appendChild(f);f.submit();
+      setTimeout(function(){try{document.body.removeChild(f);document.body.removeChild(fr)}catch(e){}},15000);
+    }catch(e){}
+  }
+  else if(ENDPOINT){try{fetch(ENDPOINT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({jenis:"login",nama:NAMA,email:EMAIL,waktu:w})}).catch(function(){})}catch(e){}}
+}
+function masukLogin(){
+  var peran=document.querySelector('input[name="peran"]:checked').value,n=document.getElementById("ln").value.trim(),
+      em=document.getElementById("le").value.trim().toLowerCase(),er=document.getElementById("err");
+  if(!n){er.textContent="Isi nama dulu ya.";return}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){er.textContent="Masukkan alamat email yang benar.";return}
+  ROLE=peran;NAMA=n;EMAIL=em;er.textContent="";
+  if(peran==="siswa")catatLogin();
+  bukaApp();
+}
+function bukaApp(){
+  document.body.classList.remove("locked");document.getElementById("gate").style.display="none";
+  document.getElementById("nRiwayat").classList.toggle("hide",ROLE!=="guru");
+  document.getElementById("bKeluar").textContent="Keluar ("+NAMA+")";
+  document.getElementById("n1").value=NAMA;
+  go(ROLE==="guru"?"riwayat":"beranda");
+}
+function keluar(){
+  ROLE=null;NAMA="";EMAIL="";
+  ["ln","le"].forEach(function(i){document.getElementById(i).value=""});
+  document.body.classList.add("locked");document.getElementById("gate").style.display="block";
+}
+function tampilRiwayat(){
+  var rl=document.getElementById("rlink");if(LINK_REKAP){rl.href=LINK_REKAP;rl.classList.remove("hide")}else rl.classList.add("hide");
+  var src=document.getElementById("rsrc"),tab=document.getElementById("rtab"),hp=document.getElementById("rhapus");
+  function gambar(rows){
+    var h='<table class="tbl"><tr><th>Waktu</th><th>Nama</th><th>Email</th></tr>';
+    rows.forEach(function(r){h+='<tr><td>'+esc(String(r[0]))+'</td><td>'+esc(String(r[1]))+'</td><td>'+esc(String(r[2]))+'</td></tr>'});
+    tab.innerHTML=rows.length?h+'</table>':'<p class="note">Belum ada siswa yang login.</p>';
+  }
+  if(ENDPOINT){
+    hp.classList.add("hide");src.textContent="Memuat dari Google Sheet…";
+    fetch(ENDPOINT+"?aksi=riwayat&kode="+KODE_GURU).then(function(r){return r.json()}).then(function(j){
+      if(j.error){src.textContent="Ditolak oleh skrip: "+j.error;return}
+      gambar(j.data||[]);src.textContent="Sumber: Google Sheet ("+(j.data||[]).length+" login terakhir, terbaru di atas)."
+    }).catch(function(){src.textContent="Gagal memuat dari Google Sheet. Periksa ENDPOINT dan skripnya."});
+  }else{
+    gambar(lokal().slice().reverse().map(function(x){return[x.waktu,x.nama,x.email]}));
+    src.textContent=FORM_LOGIN.url?"Semua login siswa masuk ke Google Form. Buka rekap lewat tombol di bawah. Tabel ini hanya menampilkan login dari perangkat ini.":"Mode demo: riwayat hanya tersimpan di perangkat ini. Isi FORM_LOGIN agar login dari semua perangkat masuk ke guru BK.";
+    hp.classList.remove("hide");
+  }
+}
+function hapusRiwayat(){simpanLokal([]);tampilRiwayat()}
+document.getElementById("le").addEventListener("keydown",function(e){if(e.key==="Enter")masukLogin()});
+go("beranda");
+</script>
+</body>
+</html>
